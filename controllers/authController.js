@@ -21,9 +21,23 @@ const authController = {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      await User.createUser(username, hashedPassword, shops);
+      const newUser = await User.createUser(username, hashedPassword, shops);
 
-      res.json({ message: "Signup successful" });
+    
+      const token = jwt.sign({ id: newUser.id, username, shops}, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        domain: "localhost", 
+      });
+
+
+      res.json(
+        { message: "Signup successful" });
     } catch (err) {
       next(err);
     }
@@ -48,6 +62,7 @@ const authController = {
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: remember ? 7 * 24 * 60 * 60 * 1000 : 30 * 60 * 1000,
+        secure: false,
         domain: ".localhost",
         sameSite: "lax",
       });

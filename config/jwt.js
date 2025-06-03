@@ -1,7 +1,12 @@
+
+require('dotenv').config();
+
+const secret = process.env.JWT_SECRET;
+
 module.exports = {
-    secret: process.env.JWT_SECRET,
-    expiresIn: {
-      short: "30m",
-      long: "7d",
-    },
-  };
+  secret,
+  expiresIn: {
+    short: '30m',  
+    long: '7d'   
+  }
+};
