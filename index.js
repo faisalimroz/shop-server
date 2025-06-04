@@ -39,6 +39,4 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
-await client.connect();
-await  client.db("admin").command({ ping: 1 });
-await client.close();
+
