@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const { connectDB } = require("./config/db");
 
-
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const shopRoutes = require("./routes/shopRoutes");
@@ -13,53 +12,33 @@ const FRONTEND_URL = process.env.NODE_ENV === 'production'
   : "http://localhost:5173";
 const app = express();
 const PORT = process.env.PORT || 5000;
-const corsOptions = {
-  origin: 'http://localhost:5173', // Allow requests from localhost:5173
-  credentials: true, // Allow cookies to be sent
-};
 
-app.use(cors(corsOptions));
-// app.use(cors({
-//   origin: [
-//     "http://localhost:5173",
-//     /^http:\/\/[a-zA-Z0-9-]+\.localhost:5173$/ 
-//   ],
-//   credentials: true,
-//   exposedHeaders: ['set-cookie']
-// }));
-// app.use(cors({
-//   origin: ["http://localhost:5173"],
-//   credentials: true,
-// }));
-// app.use(cors({
-//   origin: [
-//     "http://localhost:5173",
-//     /^http:\/\/[a-zA-Z0-9-]+\.localhost:5173$/ // Regex for all subdomains
-//   ],
-//   credentials: true,
-//   exposedHeaders: ['set-cookie']
-// }));
+// Simple CORS configuration
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
-
 connectDB();
-
 
 app.use("/api", authRoutes);
 app.use("/api", profileRoutes);
 app.use("/api", shopRoutes);
 
-
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Something went wrong!" });
+  console.error('Error:', err);
+  res.status(500).json({ message: err.message || "Something went wrong!" });
 });
 
-
 app.get("/", (req, res) => {
-    res.send("API is running");
-  });
-  
+  res.send("API is running");
+});
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+await client.connect();
+await  client.db("admin").command({ ping: 1 });
+await client.close();
